@@ -25,3 +25,5 @@ app.listen(PORT, () => {
     console.log(`Server initiated and running on port: ${PORT}`);
     Connect_Database();
 });
+
+app.use("/user",require("./src/api/routes/User.route"))
