@@ -27,3 +27,4 @@ app.listen(PORT, () => {
 });
 
 app.use("/user",require("./src/api/routes/User.route"))
+app.use("/note",require("./src/api/routes/Note.route"))
