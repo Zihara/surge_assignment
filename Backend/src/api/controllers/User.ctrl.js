@@ -1,5 +1,6 @@
 const User = require("../models/User.model");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 let salt = bcrypt.genSaltSync(10);
 //Create a user
@@ -84,4 +85,36 @@ const getAUser = async (req, res) => {
 
 }
 
-module.exports = {createUser,updateUser,getAllUsers,getAUser};
+//User login
+const UserLogin = async (req, res) => {
+    try {
+        //find the user with email
+        const user = await User.findOne({email:req.body.email});
+
+        //check availability of the user
+        if(!user) return res.json("Wrong email! Please type it again");
+
+        //check the password with bcrypt compare
+        const isPasswordCorrect = await bcrypt.compare(req.body.password,user.password);
+        if(!isPasswordCorrect) return res.json("Wrong password! Please type it again");
+
+        //Create a Jsonwebtoken with jwt sign
+        const token = jwt.sign({
+                id:user._id,
+                accountType:user.accountType
+            }, process.env.SECRET_KEY
+        )
+
+        const {...userDetails} = user._doc;
+
+        //Create a cookie with the token
+        res.cookie("access_token",token,{
+                httpOnly:true
+            }).status(200).json({...userDetails})
+
+    } catch (err) {
+        res.status(500).json(err.message);
+    }
+}
+
+module.exports = {createUser,updateUser,getAllUsers,getAUser,UserLogin};
