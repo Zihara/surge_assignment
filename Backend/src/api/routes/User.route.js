@@ -13,4 +13,7 @@ router.get("/", User.getAllUsers);
 //Get a user
 router.get("/:id", User.getAUser);
 
+//User login
+router.post("/login", User.UserLogin);
+
 module.exports = router
