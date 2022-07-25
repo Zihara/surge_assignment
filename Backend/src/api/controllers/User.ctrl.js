@@ -1,5 +1,7 @@
 const User = require("../models/User.model");
+const bcrypt = require("bcryptjs");
 
+let salt = bcrypt.genSaltSync(10);
 //Create a user
 const createUser = async (req, res) => {
 
@@ -16,10 +18,12 @@ const createUser = async (req, res) => {
         id = Math.floor( (Math.random() * 900000 )+100000);
     }
 
+    let hashPwd = bcrypt.hashSync(String(id), salt);
+
     const newUser = new User({
         id: id,
         email: req.body.email,
-        password: String(id)
+        password: hashPwd
     });
 
     try {
@@ -33,6 +37,8 @@ const createUser = async (req, res) => {
 //Update a user
 const updateUser = async (req,res) =>{
 
+    let hashPwd = bcrypt.hashSync(req.body.password, salt);
+
     try {
         await User.findByIdAndUpdate(
             {_id:req.params.id},
@@ -42,7 +48,7 @@ const updateUser = async (req,res) =>{
                     dateOfBirth: new Date(req.body.dateOfBirth),
                     mobile: req.body.mobile,
                     status: false,
-                    password: req.body.password
+                    password: hashPwd
                 }},
             { new: true }
         );
