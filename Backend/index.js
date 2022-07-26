@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 require('dotenv').config();
 
@@ -9,6 +10,7 @@ const PORT = process.env.SOCKET_PORT || 4040;
 const MONGODB_URL = process.env.MONGODB_URL;
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -28,3 +30,4 @@ app.listen(PORT, () => {
 
 app.use("/user",require("./src/api/routes/User.route"))
 app.use("/note",require("./src/api/routes/Note.route"))
+app.use("/auth",require("./src/api/routes/Auth.route"))
