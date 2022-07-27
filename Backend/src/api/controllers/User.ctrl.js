@@ -8,7 +8,7 @@ const createUser = async (req, res) => {
 
     const user = await User.findOne({email:req.body.email});
     if(user) {
-        return res.json(`Email already found`)
+        return res.status(406).json(`Email already found`)
     }
 
     let id = Math.floor( (Math.random() * 900000 )+100000);
@@ -92,11 +92,11 @@ const UserLogin = async (req, res) => {
         const user = await User.findOne({email:req.body.email});
 
         //check availability of the user
-        if(!user) return res.json("Wrong email! Please type it again");
+        if(!user) return res.status(401).json("Wrong email! Please type it again");
 
         //check the password with bcrypt compare
         const isPasswordCorrect = await bcrypt.compare(req.body.password,user.password);
-        if(!isPasswordCorrect) return res.json("Wrong password! Please type it again");
+        if(!isPasswordCorrect) return res.status(401).json("Wrong password! Please type it again");
 
         //Create a Jsonwebtoken with jwt sign
         const token = jwt.sign({
@@ -105,7 +105,7 @@ const UserLogin = async (req, res) => {
             }, process.env.SECRET_KEY
         )
 
-        const {...userDetails} = user._doc;
+        const {id,password,...userDetails} = user._doc;
 
         //Create a cookie with the token
         res.cookie("access_token",token,{
