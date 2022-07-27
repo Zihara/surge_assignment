@@ -45,7 +45,7 @@ export default function AdminDash() {
             setEmail(event.target.value);
             const newUser = {email};
 
-            await axios.post(`http://localhost:4040/user`, newUser).then((response) => {
+            await axios.note(`http://localhost:4040/user`, newUser).then((response) => {
                 Message(`${response.data}`, "success");
             }).catch((error) => {
                 Message(`${error.response.data}`, "error");
@@ -71,7 +71,7 @@ export default function AdminDash() {
     }
     React.useEffect(() => {
         getData()
-    }, [0])
+    }, [])
 
     const ViewAGroup = (id) => {
 

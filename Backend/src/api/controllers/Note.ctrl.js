@@ -3,19 +3,6 @@ const Note = require("../models/Note.model");
 //Create a note
 const createNote = async (req, res) => {
 
-    const note = await Note.findOne({email:req.body.email});
-    if(note) {
-        return res.json(`Email already found`)
-    }
-
-    let id = Math.floor( (Math.random() * 900000 )+100000);
-
-    while(true){
-        const db_id = await Note.findOne({ id: id });
-        if (!db_id) break;
-        id = Math.floor( (Math.random() * 900000 )+100000);
-    }
-
     const newNote = new Note({
         title:req.body.title,
         desc: req.body.desc
@@ -51,7 +38,6 @@ const deleteNote = async (req,res) =>{
 
     try {
         await Note.findByIdAndDelete(req.params.id);
-
         res.status(200).json(`Note successfully deleted`);
     } catch (err) {
         res.status(500).json(`${err.message}`);
